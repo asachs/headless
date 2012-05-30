@@ -43,6 +43,7 @@ class Headless
 
   DEFAULT_DISPLAY_NUMBER = 99
   DEFAULT_DISPLAY_DIMENSIONS = '1280x1024x24'
+  DEFAULT_WINDOW_MANAGER = 'fluxbox'
 
   class Exception < RuntimeError
   end
@@ -70,6 +71,7 @@ class Headless
     @dimensions = options.fetch(:dimensions, DEFAULT_DISPLAY_DIMENSIONS)
     @video_capture_options = options.fetch(:video, {})
     @destroy_at_exit = options.fetch(:destroy_at_exit, true)
+    @window_manager = options.fetch(:window_manager, DEFAULT_WINDOW_MANAGER)
 
     attach_xvfb
   end
@@ -151,6 +153,8 @@ private
     #TODO error reporting
     result = system "#{CliUtil.path_to("Xvfb")} :#{display} -screen 0 #{dimensions} -ac >/dev/null 2>&1 &"
     raise Headless::Exception.new("Xvfb did not launch - something's wrong") unless result
+    result = system "#{CliUtil.path_to(@window_manager)} >/dev/null 2>&1 &"
+    raise Headless::Exception.new("#{@window_manager} did not launch - something's wrong") unless result
   end
 
   def xvfb_running?
