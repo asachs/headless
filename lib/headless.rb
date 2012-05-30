@@ -155,6 +155,7 @@ private
     raise Headless::Exception.new("Xvfb did not launch - something's wrong") unless result
     result = system "#{CliUtil.path_to(@window_manager)} >/dev/null 2>&1 &"
     raise Headless::Exception.new("#{@window_manager} did not launch - something's wrong") unless result
+    puts "started #{@window_manager}!"
   end
 
   def xvfb_running?
